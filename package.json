@@ -1,0 +1,29 @@
+{
+  "name": "sync-reader",
+  "version": "0.1.0",
+  "description": "Real-time mobile-to-desktop bridge with AI-powered conversation",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build:shared && npm run build:server && npm run build:desktop",
+    "build:shared": "npm run build --workspace=@sync-reader/shared",
+    "build:server": "npm run build --workspace=@sync-reader/server", 
+    "build:desktop": "npm run build --workspace=@sync-reader/desktop",
+    "dev": "concurrently \"npm run dev:shared\" \"npm run dev:server\" \"npm run dev:desktop\"",
+    "dev:shared": "npm run dev --workspace=@sync-reader/shared",
+    "dev:server": "npm run dev --workspace=@sync-reader/server",
+    "dev:desktop": "npm run dev --workspace=@sync-reader/desktop",
+    "clean": "npm run clean --workspaces --if-present",
+    "install:all": "npm install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  }
+}

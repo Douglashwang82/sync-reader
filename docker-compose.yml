@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+  # Redis for session management
+  redis:
+    image: redis:7-alpine
+    container_name: sync-reader-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - sync-reader-network
+
+  # Backend server
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: sync-reader-server
+    ports:
+      - "3002:3002"
+    environment:
+      - NODE_ENV=production
+      - PORT=3002
+      - REDIS_URL=redis://redis:6379
+      - SESSION_SECRET=${SESSION_SECRET:-fallback-secret-for-development}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+    depends_on:
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - sync-reader-network
+    restart: unless-stopped
+
+  # Desktop frontend  
+  desktop:
+    build:
+      context: .
+      dockerfile: Dockerfile.desktop
+      args:
+        VITE_SERVER_URL: ws://localhost:3002
+    container_name: sync-reader-desktop
+    ports:
+      - "3000:80"
+    depends_on:
+      - server
+    networks:
+      - sync-reader-network
+    restart: unless-stopped
+
+volumes:
+  redis_data:
+
+networks:
+  sync-reader-network:
+    driver: bridge

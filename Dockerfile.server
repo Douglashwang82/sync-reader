@@ -1,0 +1,68 @@
+# Server Dockerfile
+FROM node:18-alpine AS base
+
+# Install dependencies only when needed
+FROM base AS deps
+WORKDIR /app
+
+# Copy root package files
+COPY package*.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/server/package.json ./packages/server/
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Build stage
+FROM base AS builder
+WORKDIR /app
+
+# Copy root package files
+COPY package*.json ./
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/server/package.json ./packages/server/
+
+# Install all dependencies (including dev)
+RUN npm ci
+
+# Copy shared source and build
+COPY packages/shared ./packages/shared
+RUN npm run build:shared
+
+# Copy server source and build  
+COPY packages/server ./packages/server
+RUN npm run build:server
+
+# Production stage
+FROM base AS runner
+WORKDIR /app
+
+# Create non-root user
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+
+# Copy built shared package
+COPY --from=builder --chown=nodejs:nodejs /app/packages/shared/dist ./packages/shared/dist
+COPY --from=builder --chown=nodejs:nodejs /app/packages/shared/package.json ./packages/shared/
+
+# Copy built server
+COPY --from=builder --chown=nodejs:nodejs /app/packages/server/dist ./packages/server/dist
+COPY --from=builder --chown=nodejs:nodejs /app/packages/server/package.json ./packages/server/
+
+# Copy production dependencies
+COPY --from=deps --chown=nodejs:nodejs /app/node_modules ./node_modules
+COPY --from=deps --chown=nodejs:nodejs /app/packages/shared/node_modules ./packages/shared/node_modules
+COPY --from=deps --chown=nodejs:nodejs /app/packages/server/node_modules ./packages/server/node_modules
+
+# Copy root package.json
+COPY --chown=nodejs:nodejs package.json ./
+
+USER nodejs
+
+EXPOSE 3002
+
+ENV NODE_ENV=production
+ENV PORT=3002
+
+WORKDIR /app/packages/server
+CMD ["node", "dist/index.js"]

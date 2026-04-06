@@ -1,0 +1,230 @@
+# Dependencies
+node_modules/
+*/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Build outputs
+dist/
+build/
+*/dist/
+*/build/
+apps/*/dist/
+apps/*/build/
+packages/*/dist/
+packages/*/build/
+
+# TypeScript
+*.tsbuildinfo
+.tscache/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.*
+!.env.example
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+.nyc_output/
+
+# Dependency directories
+.pnpm-state/
+jspm_packages/
+
+# Snowpack dependency directory (https://snowpack.dev/)
+web_modules/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env.test
+
+# parcel-bundler cache (https://parceljs.org/)
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Vite build tool
+.vite/
+.vite-inspect/
+
+# Rollup cache
+.rollup.cache/
+
+# Storybook build outputs
+.out
+.storybook-out
+
+# Temporary folders
+tmp/
+temp/
+
+# IDE and editor files
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# React Native / Expo
+.expo/
+.expo-shared/
+expo-env.d.ts
+web-build/
+
+# Metro bundler cache
+.metro-health-check*
+
+# Flipper
+.flipper/
+
+# CocoaPods (iOS)
+ios/Pods/
+ios/**/*.xcworkspace/xcuserdata/
+ios/**/*.xcodeproj/xcuserdata/
+ios/.xcode.env.local
+
+# Android
+android/app/build/
+android/.gradle/
+android/captures/
+android/gradle/
+android/gradlew
+android/gradlew.bat
+android/local.properties
+*.keystore
+!debug.keystore
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# EAS
+.easignore
+
+# Docker
+.dockerignore
+
+# Local development
+.local/
+.cache/
+
+# Test files
+__tests__/coverage/
+test-results/
+test-report.html
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Redis dump files
+dump.rdb
+
+# Process files
+*.pid
+
+# Session storage (development)
+sessions/
+
+# Generated documentation
+docs/build/
+
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Lock files (keep package-lock.json but ignore others)
+yarn.lock
+pnpm-lock.yaml
+
+# Webpack
+.webpack/
+
+# ESBuild
+.esbuild/
+
+# SWC
+.swc/
+
+# Turborepo
+.turbo/
+
+# Vercel
+.vercel
+
+# Sentry
+.sentryclirc
