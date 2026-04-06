@@ -5,7 +5,7 @@ import SessionSetup from './components/SessionSetup';
 import MainInterface from './components/MainInterface';
 
 function App() {
-  const { session, connected, setConnected, setSession, setSessionError, setFrames, addMessage, appendAIToken, clearAIResponse, setIsAIResponding } = useAppStore();
+  const { session, connected, setConnected, setSession, setSessionError, setFrames, addMessage, appendAIToken, clearAIResponse, setIsAIResponding, reset } = useAppStore();
 
   useEffect(() => {
     // Initialize WebSocket connection
@@ -21,6 +21,10 @@ function App() {
     });
 
     wsService.onSessionStatus((sessionData) => {
+      if (sessionData.status === 'ended') {
+        reset();
+        return;
+      }
       setSession(sessionData);
       setSessionError(null);
     });
@@ -43,7 +47,13 @@ function App() {
       console.error('AI Error:', error);
       setIsAIResponding(false);
       clearAIResponse();
-      // You could add an error message to the chat here
+      addMessage({
+        id: `error-${Date.now()}`,
+        sessionId: 'current',
+        content: `Error: ${error.message}`,
+        timestamp: Date.now(),
+        type: 'ai',
+      });
     });
 
     // Cleanup on unmount

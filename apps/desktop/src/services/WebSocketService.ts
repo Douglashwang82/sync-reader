@@ -12,6 +12,7 @@ class WebSocketService {
   private socket: Socket<ServerToClientEvents, ClientToServerEvents> | null = null;
   private reconnectAttempts = 0;
   private maxReconnectAttempts = 5;
+  serverUrl = import.meta.env.VITE_SERVER_URL || 'wss://localhost:3002';
 
   connect() {
     if (this.socket?.connected) {
@@ -19,8 +20,9 @@ class WebSocketService {
     }
 
     // Use environment variable or default to localhost:3002
-    const serverUrl = import.meta.env.VITE_SERVER_URL || 'ws://localhost:3002';
-    
+    const serverUrl = import.meta.env.VITE_SERVER_URL || 'wss://localhost:3002';
+    this.serverUrl = serverUrl;
+
     this.socket = io(serverUrl, {
       transports: ['websocket'],
       upgrade: false,
@@ -119,6 +121,11 @@ class WebSocketService {
   onAIError(callback: (error: ErrorResponse) => void) {
     if (!this.socket) throw new Error('Not connected to server');
     this.socket.on('ai_error', callback);
+  }
+
+  getFrameUrl(frameId: string): string {
+    const httpBase = this.serverUrl.replace(/^wss?:\/\//, 'https://').replace(/\/$/, '');
+    return `${httpBase}/api/frames/${frameId}`;
   }
 
   // Clean up listeners

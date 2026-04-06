@@ -4,15 +4,16 @@ import { wsService } from '../services/WebSocketService';
 import { validateMessage } from '@sync-reader/shared';
 
 export default function ChatPanel() {
-  const { 
-    messages, 
-    currentMessage, 
-    isAIResponding, 
+  const {
+    messages,
+    session,
+    currentMessage,
+    isAIResponding,
     aiResponse,
-    setCurrentMessage, 
-    addMessage, 
-    setIsAIResponding, 
-    clearAIResponse 
+    setCurrentMessage,
+    addMessage,
+    setIsAIResponding,
+    clearAIResponse
   } = useAppStore();
   
   const messagesEndRef = useRef<HTMLDivElement>(null);
@@ -29,7 +30,7 @@ export default function ChatPanel() {
     // Add user message
     const userMessage = {
       id: `user-${Date.now()}`,
-      sessionId: 'current', // This would be populated properly by the server
+      sessionId: session?.id ?? '',
       content: currentMessage,
       timestamp: Date.now(),
       type: 'user' as const
@@ -49,7 +50,7 @@ export default function ChatPanel() {
     inputRef.current?.focus();
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
@@ -89,7 +90,7 @@ export default function ChatPanel() {
           type="text"
           value={currentMessage}
           onChange={(e) => setCurrentMessage(e.target.value)}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           placeholder="Ask about what you're reading on your phone..."
           disabled={isAIResponding}
           maxLength={1000}

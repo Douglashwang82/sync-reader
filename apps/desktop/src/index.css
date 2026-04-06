@@ -80,6 +80,25 @@ body {
   color: white;
   padding: 20px;
   text-align: center;
+  position: relative;
+}
+
+.end-session-button {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  color: white;
+  border: 1px solid rgba(255,255,255,0.7);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.end-session-button:hover {
+  background: rgba(255,255,255,0.15);
 }
 
 .session-status {
@@ -200,7 +219,7 @@ body {
   margin-top: 15px;
 }
 
-.join-button:hover {
+.join-button:hover:not(:disabled) {
   background: #357abd;
 }
 

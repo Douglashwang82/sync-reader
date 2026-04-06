@@ -1,4 +1,5 @@
 import { useAppStore } from '../stores/appStore';
+import { wsService } from '../services/WebSocketService';
 
 export default function PhonePreview() {
   const { currentFrame } = useAppStore();
@@ -8,7 +9,7 @@ export default function PhonePreview() {
       <div className="phone-screen">
         {currentFrame ? (
           <img
-            src={`data:image/jpeg;base64,${currentFrame.id}`} // Note: Real implementation would fetch frame data
+            src={wsService.getFrameUrl(currentFrame.id)}
             alt="Phone screen capture"
             className="frame-image"
             onError={(e) => {
