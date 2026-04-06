@@ -27,7 +27,7 @@ export default function SessionSetup() {
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !isJoining) {
       handleJoinSession();
     }
@@ -54,7 +54,7 @@ export default function SessionSetup() {
           className="code-input"
           value={joinCode}
           onChange={handleCodeChange}
-          onKeyPress={handleKeyPress}
+          onKeyDown={handleKeyDown}
           placeholder="ABCD12"
           maxLength={6}
           disabled={isJoining}
