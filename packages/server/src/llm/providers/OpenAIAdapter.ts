@@ -64,7 +64,7 @@ export class OpenAIAdapter implements LLMAdapter {
 
       // Create streaming completion
       const stream = await this.client.chat.completions.create({
-        model: 'gpt-4-vision-preview',
+        model: 'gpt-4o',
         messages,
         max_tokens: 1000,
         temperature: 0.7,

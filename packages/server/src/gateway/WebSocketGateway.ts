@@ -26,11 +26,13 @@ export class WebSocketGateway {
       // Mobile client events
       socket.on('session_create', this.handleSessionCreate.bind(this, socket));
       socket.on('frame_binary', this.handleFrameBinary.bind(this, socket));
-      
+      socket.on('capture_pause', this.handleCapturePause.bind(this, socket));
+      socket.on('capture_resume', this.handleCaptureResume.bind(this, socket));
+
       // Desktop client events
       socket.on('session_join', this.handleSessionJoin.bind(this, socket));
       socket.on('chat_question', this.handleChatQuestion.bind(this, socket));
-      
+
       // Common events
       socket.on('session_end', this.handleSessionEnd.bind(this, socket));
       socket.on('disconnect', this.handleDisconnect.bind(this, socket));
@@ -93,9 +95,9 @@ export class WebSocketGateway {
       // Store session info on socket
       socket.data = { sessionId, clientType: 'desktop' };
       
-      // Emit success to desktop
-      socket.emit('session_paired', { sessionId });
-      
+      // Notify desktop of successful pairing
+      socket.emit('session_status', { sessionId, status: 'paired' });
+
       // Notify mobile client that desktop has joined
       socket.to(sessionId).emit('session_paired', { sessionId });
       
@@ -242,7 +244,13 @@ export class WebSocketGateway {
             timestamp: new Date(),
             frames: usedFrames
           });
-          
+
+          // Emit separate ai_done event per contract
+          socket.emit('ai_done', {
+            questionId: data.questionId,
+            provider: token.provider
+          });
+
           console.log(`✅ Question answered for session ${sessionId}`);
         }
         
@@ -328,6 +336,44 @@ export class WebSocketGateway {
       
     } catch (error) {
       console.error('❌ Disconnect handling error:', error);
+    }
+  }
+
+  /**
+   * Handle mobile client pausing capture
+   */
+  private async handleCapturePause(socket: Socket): Promise<void> {
+    try {
+      const { sessionId, clientType } = socket.data;
+
+      if (!sessionId || clientType !== 'mobile') {
+        return;
+      }
+
+      socket.to(sessionId).emit('session_status', { sessionId, status: 'capture_paused' });
+      console.log(`⏸️  Capture paused for session ${sessionId}`);
+
+    } catch (error) {
+      console.error('❌ Capture pause error:', error);
+    }
+  }
+
+  /**
+   * Handle mobile client resuming capture
+   */
+  private async handleCaptureResume(socket: Socket): Promise<void> {
+    try {
+      const { sessionId, clientType } = socket.data;
+
+      if (!sessionId || clientType !== 'mobile') {
+        return;
+      }
+
+      socket.to(sessionId).emit('session_status', { sessionId, status: 'capture_resumed' });
+      console.log(`▶️  Capture resumed for session ${sessionId}`);
+
+    } catch (error) {
+      console.error('❌ Capture resume error:', error);
     }
   }
 
